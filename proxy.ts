@@ -1,0 +1,21 @@
+import { NextRequest, NextResponse } from 'next/server'
+
+export function proxy(req: NextRequest) {
+  const { pathname } = req.nextUrl
+
+  // Protect all /admin routes except /admin/login
+  if (pathname.startsWith('/admin') && !pathname.startsWith('/admin/login')) {
+    const auth = req.cookies.get('admin_auth')
+    if (auth?.value !== '1') {
+      const loginUrl = req.nextUrl.clone()
+      loginUrl.pathname = '/admin/login'
+      return NextResponse.redirect(loginUrl)
+    }
+  }
+
+  return NextResponse.next()
+}
+
+export const config = {
+  matcher: ['/admin/:path*'],
+}
