@@ -1,25 +1,64 @@
-import { getSupabaseAdmin } from '@/lib/supabase/admin'
+'use client'
+
+import { useState, useEffect } from 'react'
 import { ResponsesTable } from '@/components/admin/responses-table'
-import { LogOut, LayoutDashboard, Users, TrendingUp } from 'lucide-react'
+import { LogOut, LayoutDashboard, Users, TrendingUp, Loader2, RefreshCw } from 'lucide-react'
 import Link from 'next/link'
 
-export const dynamic = 'force-dynamic'
-export const runtime = 'edge'
+interface Submission {
+  id: string
+  email: string
+  phone: string | null
+  instagram: string | null
+  discord: string | null
+  telegram: string | null
+  message: string | null
+  submitted_at: string
+  ip_address: string | null
+  user_agent: string | null
+}
 
-export default async function AdminPage() {
-  const { data: submissions, error } = await getSupabaseAdmin()
-    .from('contact_submissions')
-    .select('*')
-    .order('submitted_at', { ascending: false })
+export default function AdminPage() {
+  const [submissions, setSubmissions] = useState<Submission[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
 
-  const total = submissions?.length ?? 0
+  async function loadData(isRefresh = false) {
+    if (isRefresh) setRefreshing(true)
+    else setLoading(true)
+    setError(null)
 
-  const recentCount = submissions?.filter((s) => {
+    try {
+      const res = await fetch('/api/admin/responses')
+      if (res.status === 401) {
+        window.location.href = '/admin/login'
+        return
+      }
+      if (!res.ok) {
+        const json = await res.json()
+        throw new Error(json.error ?? 'Failed to load responses')
+      }
+      const json = await res.json()
+      setSubmissions(json.responses ?? [])
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to load responses')
+    } finally {
+      setLoading(false)
+      setRefreshing(false)
+    }
+  }
+
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => { loadData() }, [])  // eslint-disable-line react-hooks/exhaustive-deps
+
+  const total = submissions.length
+  const recentCount = submissions.filter((s) => {
     const d = new Date(s.submitted_at)
     const cutoff = new Date()
     cutoff.setDate(cutoff.getDate() - 7)
     return d >= cutoff
-  }).length ?? 0
+  }).length
 
   return (
     <div className="min-h-screen bg-gray-50/50">
@@ -42,13 +81,24 @@ export default async function AdminPage() {
             </div>
           </div>
 
-          <Link
-            href="/api/admin/logout"
-            className="flex shrink-0 items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
-          >
-            <LogOut className="h-3.5 w-3.5" />
-            <span className="hidden sm:inline">Sign out</span>
-          </Link>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => loadData(true)}
+              disabled={refreshing || loading}
+              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 disabled:opacity-40"
+            >
+              <RefreshCw className={`h-3.5 w-3.5 ${refreshing ? 'animate-spin' : ''}`} />
+              <span className="hidden sm:inline">Refresh</span>
+            </button>
+
+            <Link
+              href="/api/admin/logout"
+              className="flex shrink-0 items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              <span className="hidden sm:inline">Sign out</span>
+            </Link>
+          </div>
         </div>
       </header>
 
@@ -66,7 +116,9 @@ export default async function AdminPage() {
             <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 sm:mb-3 sm:h-9 sm:w-9">
               <Users className="h-4 w-4 text-blue-500" />
             </div>
-            <p className="text-xl font-bold text-gray-900 sm:text-2xl">{error ? '—' : total}</p>
+            <p className="text-xl font-bold text-gray-900 sm:text-2xl">
+              {loading ? '—' : total}
+            </p>
             <p className="mt-0.5 text-xs text-gray-400">Total responses</p>
           </div>
 
@@ -74,7 +126,9 @@ export default async function AdminPage() {
             <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 sm:mb-3 sm:h-9 sm:w-9">
               <TrendingUp className="h-4 w-4 text-emerald-500" />
             </div>
-            <p className="text-xl font-bold text-gray-900 sm:text-2xl">{error ? '—' : recentCount}</p>
+            <p className="text-xl font-bold text-gray-900 sm:text-2xl">
+              {loading ? '—' : recentCount}
+            </p>
             <p className="mt-0.5 text-xs text-gray-400">Last 7 days</p>
           </div>
         </div>
@@ -88,20 +142,31 @@ export default async function AdminPage() {
                 Click email to compose · Copy icon for full UUID
               </p>
             </div>
-            {!error && total > 0 && (
+            {!loading && !error && total > 0 && (
               <span className="rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-500">
                 {total} {total === 1 ? 'entry' : 'entries'}
               </span>
             )}
           </div>
 
-          {error ? (
+          {loading ? (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <Loader2 className="h-6 w-6 animate-spin text-gray-300" />
+              <p className="mt-3 text-sm text-gray-400">Loading responses…</p>
+            </div>
+          ) : error ? (
             <div className="flex flex-col items-center justify-center py-16 text-center">
               <p className="text-sm font-medium text-red-500">Failed to load responses</p>
-              <p className="mt-1 text-xs text-gray-400">Check your Supabase configuration</p>
+              <p className="mt-1 text-xs text-gray-400">{error}</p>
+              <button
+                onClick={() => loadData()}
+                className="mt-4 rounded-lg border border-gray-200 px-4 py-2 text-xs font-medium text-gray-600 hover:bg-gray-50"
+              >
+                Try again
+              </button>
             </div>
           ) : (
-            <ResponsesTable submissions={submissions ?? []} />
+            <ResponsesTable submissions={submissions} />
           )}
         </div>
       </main>

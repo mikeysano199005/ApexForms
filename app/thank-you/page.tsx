@@ -1,14 +1,13 @@
+'use client'
+
+import { Suspense } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { CheckCircle2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
-export const runtime = 'edge'
-
-interface ThankYouPageProps {
-  searchParams: Promise<{ id?: string }>
-}
-
-export default async function ThankYouPage({ searchParams }: ThankYouPageProps) {
-  const { id } = await searchParams
+function ThankYouContent() {
+  const searchParams = useSearchParams()
+  const id = searchParams.get('id')
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50/60 to-white px-4 py-10">
@@ -57,5 +56,13 @@ export default async function ThankYouPage({ searchParams }: ThankYouPageProps) 
         </div>
       </div>
     </main>
+  )
+}
+
+export default function ThankYouPage() {
+  return (
+    <Suspense>
+      <ThankYouContent />
+    </Suspense>
   )
 }

@@ -1,7 +1,7 @@
 import { ContactForm } from '@/components/contact-form'
 import { MessageSquareHeart, ShieldCheck } from 'lucide-react'
 
-export const runtime = 'edge'
+// No edge runtime → pre-rendered as static HTML, served from Cloudflare CDN
 
 export default function ContactPage() {
   return (
