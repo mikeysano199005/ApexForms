@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from 'next/server'
 import { contactSchema } from '@/lib/validations/contact'
 import { supabaseAdmin } from '@/lib/supabase/admin'
 
+export const runtime = 'edge'
+
 export async function POST(req: NextRequest) {
   let body: unknown
   try {

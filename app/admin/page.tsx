@@ -4,6 +4,7 @@ import { LogOut, LayoutDashboard, Users, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'edge'
 
 export default async function AdminPage() {
   const { data: submissions, error } = await supabaseAdmin
