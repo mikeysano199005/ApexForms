@@ -1,17 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 
 export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
 export async function GET(req: NextRequest) {
-  // Guard: only allow if admin cookie is set (middleware handles this too,
-  // but this is a defence-in-depth check for the API route itself)
   const auth = req.cookies.get('admin_auth')
   if (auth?.value !== '1') {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
-  const { data, error } = await supabaseAdmin
+  const supabase = getSupabaseAdmin()
+  const { data, error } = await supabase
     .from('contact_submissions')
     .select('*')
     .order('submitted_at', { ascending: false })

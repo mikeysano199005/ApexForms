@@ -1,8 +1,13 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Server-only — never import this in client components or pages
-// Uses the service role key which bypasses Row Level Security
-export const supabaseAdmin = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.SUPABASE_SERVICE_ROLE_KEY!
-)
+// Lazy — only instantiated when a request is handled, not at build time
+export function getSupabaseAdmin() {
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const key = process.env.SUPABASE_SERVICE_ROLE_KEY
+
+  if (!url || !key) {
+    throw new Error('Missing Supabase environment variables')
+  }
+
+  return createClient(url, key)
+}

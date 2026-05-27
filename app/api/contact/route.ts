@@ -1,8 +1,9 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { contactSchema } from '@/lib/validations/contact'
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 
 export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
 export async function POST(req: NextRequest) {
   let body: unknown
@@ -12,7 +13,6 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid JSON body' }, { status: 400 })
   }
 
-  // Always re-validate on the server — never trust client-side data
   const parsed = contactSchema.safeParse(body)
   if (!parsed.success) {
     return NextResponse.json(
@@ -21,14 +21,14 @@ export async function POST(req: NextRequest) {
     )
   }
 
-  // Capture metadata for spam/analytics
   const ip =
     req.headers.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     req.headers.get('x-real-ip') ??
     null
   const userAgent = req.headers.get('user-agent') ?? null
 
-  const { data, error } = await supabaseAdmin
+  const supabase = getSupabaseAdmin()
+  const { data, error } = await supabase
     .from('contact_submissions')
     .insert({
       email: parsed.data.email,

@@ -1,4 +1,4 @@
-import { supabaseAdmin } from '@/lib/supabase/admin'
+import { getSupabaseAdmin } from '@/lib/supabase/admin'
 import { ResponsesTable } from '@/components/admin/responses-table'
 import { LogOut, LayoutDashboard, Users, TrendingUp } from 'lucide-react'
 import Link from 'next/link'
@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'edge'
 
 export default async function AdminPage() {
-  const { data: submissions, error } = await supabaseAdmin
+  const { data: submissions, error } = await getSupabaseAdmin()
     .from('contact_submissions')
     .select('*')
     .order('submitted_at', { ascending: false })
