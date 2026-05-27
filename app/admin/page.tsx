@@ -14,7 +14,6 @@ export default async function AdminPage() {
 
   const total = submissions?.length ?? 0
 
-  // Count responses from last 7 days
   const recentCount = submissions?.filter((s) => {
     const d = new Date(s.submitted_at)
     const cutoff = new Date()
@@ -25,65 +24,67 @@ export default async function AdminPage() {
   return (
     <div className="min-h-screen bg-gray-50/50">
 
-      {/* Top nav */}
+      {/* Navbar */}
       <header className="sticky top-0 z-10 border-b border-gray-200 bg-white/80 backdrop-blur-sm">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-3.5">
-          <div className="flex items-center gap-3">
-            <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-600 shadow-sm shadow-blue-200">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+          <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+            <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-600 shadow-sm shadow-blue-200">
               <LayoutDashboard className="h-4 w-4 text-white" />
             </div>
-            <div>
-              <span className="text-sm font-semibold text-gray-900">Admin Panel</span>
-              <span className="ml-2 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-600">
-                Live
-              </span>
+            <div className="min-w-0">
+              <div className="flex items-center gap-2">
+                <span className="truncate text-sm font-semibold text-gray-900">Admin Panel</span>
+                <span className="hidden shrink-0 rounded-full bg-blue-50 px-2 py-0.5 text-[11px] font-medium text-blue-600 sm:inline">
+                  Live
+                </span>
+              </div>
+              <p className="hidden text-xs text-gray-400 sm:block">Contact Form Responses</p>
             </div>
           </div>
 
           <Link
             href="/api/admin/logout"
-            className="flex items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
+            className="flex shrink-0 items-center gap-1.5 rounded-lg border border-gray-200 px-3 py-1.5 text-xs font-medium text-gray-500 transition-all hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700"
           >
             <LogOut className="h-3.5 w-3.5" />
-            Sign out
+            <span className="hidden sm:inline">Sign out</span>
           </Link>
         </div>
       </header>
 
-      <main className="mx-auto max-w-7xl px-6 py-8">
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
 
         {/* Page heading */}
-        <div className="mb-6">
-          <h1 className="text-xl font-bold text-gray-900">Contact Responses</h1>
+        <div className="mb-5">
+          <h1 className="text-lg font-bold text-gray-900 sm:text-xl">Contact Responses</h1>
           <p className="mt-0.5 text-sm text-gray-400">All form submissions, newest first</p>
         </div>
 
         {/* Stats */}
-        <div className="mb-6 grid grid-cols-2 gap-4 sm:grid-cols-2 max-w-sm">
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-blue-50">
-              <Users className="h-4.5 w-4.5 text-blue-500" />
+        <div className="mb-5 grid grid-cols-2 gap-3 sm:gap-4 max-w-xs sm:max-w-sm">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-blue-50 sm:mb-3 sm:h-9 sm:w-9">
+              <Users className="h-4 w-4 text-blue-500" />
             </div>
-            <p className="text-2xl font-bold text-gray-900">{error ? '—' : total}</p>
+            <p className="text-xl font-bold text-gray-900 sm:text-2xl">{error ? '—' : total}</p>
             <p className="mt-0.5 text-xs text-gray-400">Total responses</p>
           </div>
 
-          <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm">
-            <div className="mb-3 flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50">
-              <TrendingUp className="h-4.5 w-4.5 text-emerald-500" />
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm sm:p-5">
+            <div className="mb-2 flex h-8 w-8 items-center justify-center rounded-xl bg-emerald-50 sm:mb-3 sm:h-9 sm:w-9">
+              <TrendingUp className="h-4 w-4 text-emerald-500" />
             </div>
-            <p className="text-2xl font-bold text-gray-900">{error ? '—' : recentCount}</p>
+            <p className="text-xl font-bold text-gray-900 sm:text-2xl">{error ? '—' : recentCount}</p>
             <p className="mt-0.5 text-xs text-gray-400">Last 7 days</p>
           </div>
         </div>
 
         {/* Table card */}
         <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-          {/* Table header */}
-          <div className="flex items-center justify-between border-b border-gray-100 px-6 py-4">
+          <div className="flex items-center justify-between border-b border-gray-100 px-4 py-3.5 sm:px-6 sm:py-4">
             <div>
               <h2 className="text-sm font-semibold text-gray-800">All Submissions</h2>
-              <p className="mt-0.5 text-xs text-gray-400">
+              <p className="mt-0.5 hidden text-xs text-gray-400 sm:block">
                 Click email to compose · Copy icon for full UUID
               </p>
             </div>

@@ -24,6 +24,8 @@ function Dash() {
   return <span className="text-gray-200">—</span>
 }
 
+const cell = 'whitespace-nowrap px-4 py-3 sm:px-5 sm:py-4'
+
 export function ResponseRow({ submission, index }: ResponseRowProps) {
   const [copied, setCopied] = useState(false)
 
@@ -46,13 +48,12 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
 
   return (
     <tr className="group transition-colors hover:bg-blue-50/30">
+
       {/* # */}
-      <td className="whitespace-nowrap px-5 py-4 text-xs text-gray-300">
-        {index + 1}
-      </td>
+      <td className={`${cell} text-xs text-gray-300`}>{index + 1}</td>
 
       {/* ID */}
-      <td className="whitespace-nowrap px-5 py-4">
+      <td className={cell}>
         <div className="flex items-center gap-1.5">
           <span
             title={submission.id}
@@ -65,17 +66,15 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
             title="Copy full ID"
             className="rounded-md p-1 text-gray-300 opacity-0 transition-all group-hover:opacity-100 hover:bg-gray-100 hover:text-gray-600"
           >
-            {copied ? (
-              <Check className="h-3.5 w-3.5 text-emerald-500" />
-            ) : (
-              <Copy className="h-3.5 w-3.5" />
-            )}
+            {copied
+              ? <Check className="h-3.5 w-3.5 text-emerald-500" />
+              : <Copy className="h-3.5 w-3.5" />}
           </button>
         </div>
       </td>
 
       {/* Email */}
-      <td className="px-5 py-4">
+      <td className={cell}>
         <a
           href={`mailto:${submission.email}`}
           className="flex items-center gap-1.5 text-sm font-medium text-blue-600 hover:text-blue-700 hover:underline"
@@ -86,7 +85,7 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
       </td>
 
       {/* Phone */}
-      <td className="whitespace-nowrap px-5 py-4 text-sm">
+      <td className={`${cell} text-sm`}>
         {submission.phone ? (
           <div className="flex items-center gap-1.5 text-gray-700">
             <Phone className="h-3.5 w-3.5 shrink-0 text-gray-300" />
@@ -96,7 +95,7 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
       </td>
 
       {/* Instagram */}
-      <td className="whitespace-nowrap px-5 py-4 text-sm">
+      <td className={`${cell} text-sm`}>
         {submission.instagram ? (
           <a
             href={`https://instagram.com/${submission.instagram}`}
@@ -112,7 +111,7 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
       </td>
 
       {/* Discord */}
-      <td className="whitespace-nowrap px-5 py-4 text-sm">
+      <td className={`${cell} text-sm`}>
         {submission.discord ? (
           <div className="flex items-center gap-1.5 text-indigo-500">
             <Hash className="h-3.5 w-3.5 shrink-0" />
@@ -122,7 +121,7 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
       </td>
 
       {/* Telegram */}
-      <td className="whitespace-nowrap px-5 py-4 text-sm">
+      <td className={`${cell} text-sm`}>
         {submission.telegram ? (
           <a
             href={`https://t.me/${submission.telegram}`}
@@ -138,25 +137,23 @@ export function ResponseRow({ submission, index }: ResponseRowProps) {
       </td>
 
       {/* Message */}
-      <td className="px-5 py-4 text-sm" style={{ maxWidth: '240px' }}>
+      <td className="px-4 py-3 text-sm sm:px-5 sm:py-4" style={{ maxWidth: '200px' }}>
         {submission.message ? (
           <div className="flex items-start gap-1.5">
             <MessageSquare className="mt-0.5 h-3.5 w-3.5 shrink-0 text-gray-300" />
-            <span
-              className="line-clamp-2 text-gray-600"
-              title={submission.message}
-            >
+            <span className="line-clamp-2 text-gray-600" title={submission.message}>
               {submission.message}
             </span>
           </div>
         ) : <Dash />}
       </td>
 
-      {/* Submitted at */}
-      <td className="whitespace-nowrap px-5 py-4 text-right text-sm">
+      {/* Submitted */}
+      <td className={`${cell} text-right text-sm`}>
         <div className="text-gray-600">{formattedDate}</div>
         <div className="text-xs text-gray-400">{formattedTime}</div>
       </td>
+
     </tr>
   )
 }

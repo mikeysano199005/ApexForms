@@ -43,7 +43,7 @@ export default function AdminLoginPage() {
   }
 
   return (
-    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50/60 to-white px-4">
+    <main className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-b from-blue-50/60 to-white px-4 py-10">
       <div className="w-full max-w-sm">
 
         {/* Header */}

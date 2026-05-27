@@ -22,7 +22,7 @@ const headers = ['#', 'ID', 'Email', 'Phone', 'Instagram', 'Discord', 'Telegram'
 export function ResponsesTable({ submissions }: ResponsesTableProps) {
   if (submissions.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-20 text-center">
+      <div className="flex flex-col items-center justify-center px-4 py-16 text-center sm:py-20">
         <div className="mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gray-100">
           <Inbox className="h-6 w-6 text-gray-400" />
         </div>
@@ -35,14 +35,15 @@ export function ResponsesTable({ submissions }: ResponsesTableProps) {
   }
 
   return (
-    <div className="overflow-x-auto">
+    /* Scrollable wrapper — essential for mobile */
+    <div className="w-full overflow-x-auto">
       <table className="min-w-full">
         <thead>
           <tr className="border-b border-gray-100 bg-gray-50/50">
             {headers.map((h) => (
               <th
                 key={h}
-                className="whitespace-nowrap px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400"
+                className="whitespace-nowrap px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-gray-400 sm:px-5"
               >
                 {h}
               </th>
