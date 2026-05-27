@@ -1,6 +1,8 @@
 import { CheckCircle2, ArrowLeft } from 'lucide-react'
 import Link from 'next/link'
 
+export const runtime = 'edge'
+
 interface ThankYouPageProps {
   searchParams: Promise<{ id?: string }>
 }
