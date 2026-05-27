@@ -8,7 +8,7 @@
 body {
   background: #ffffff;
   color: #111827;
-  font-family: Inter, system-ui, -apple-system, sans-serif;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
@@ -17,10 +17,4 @@ input,
 textarea,
 button {
   transition: all 150ms ease;
-}
-
-/* Custom ring width utility */
-.focus\:ring-3:focus {
-  --tw-ring-shadow: var(--tw-ring-inset) 0 0 0 3px var(--tw-ring-color);
-  box-shadow: var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow, 0 0 #0000);
 }
